@@ -37,7 +37,7 @@ def about():
     )
 
 @app.route('/login')
-def contact():
+def login():
     """Renders the login page."""
     return render_template(
         'login.html',
