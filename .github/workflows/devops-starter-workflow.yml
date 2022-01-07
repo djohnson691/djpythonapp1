@@ -12,7 +12,7 @@ env:
   LOCATION: "South Central US"
   HOSTINGPLANNAME: "djpythonapp1-plan"
   APPINSIGHTLOCATION: "South Central US"
-  SKU: "B1 Basic"
+  SKU: "F1 Free"
 
 jobs:
   Build:
