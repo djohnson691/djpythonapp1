@@ -43,5 +43,5 @@ def login():
         'login.html',
         title='Login',
         year=(datetime.now().year + 5),
-        message='Login here.'
+        message='Login here'
     )
