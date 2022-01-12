@@ -29,6 +29,8 @@ variables:
 
   terraformVersion: '1.1.3'
 
+  terraformWorkingDirectory: $(System.DefaultWorkingDirectory)/Terraform
+
 stages:
 - stage: Build
   displayName: Build stage
@@ -79,7 +81,6 @@ stages:
       inputs:
         command: init
         backendType: azurerm
-        #environmentServiceName: 'djpythonapp1_serviceconnection'
         backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
         ensureBackend: true
         backendAzureRmResourceGroupName: test-tfstate
@@ -88,4 +89,10 @@ stages:
         backendAzureRmStorageAccountSku: LRS
         backendAzureRmContainerName: tfstate
         backendAzureRmKey: djpythonapp1_test.tfstate
+    - task: TerraformCLI@0
+      displayName: "Terraform Apply"
+      inputs:
+        environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
+        workingDirectory: $(terraformWorkingDirectory)
+
 
