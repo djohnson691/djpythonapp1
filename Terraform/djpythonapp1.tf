@@ -2,6 +2,10 @@ provider "azurerm" {
   features {}
 }
 
+terraform {
+  backend "azurerm" {}
+}
+
 resource "azurerm_resource_group" "djpythonapp1" {
     name = "test"
     location = "Central US"
