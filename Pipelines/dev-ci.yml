@@ -93,6 +93,7 @@ stages:
     - task: TerraformCLI@0
       displayName: "Terraform Apply"
       inputs:
+        command: apply
         environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
         workingDirectory: $(terraformWorkingDirectory)
 
