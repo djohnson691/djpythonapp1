@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "djpythonapp1" {
-    name = "djpythonapp1-test"
+    name = "test"
     location = "Central US"
 }
 
