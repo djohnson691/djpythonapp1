@@ -12,7 +12,7 @@ resource "azurerm_app_service_plan" "djpythonapp1" {
     location = "Central US"
     resource_group_name = azurerm_resource_group.djpythonapp1.name
     kind = "Linux"
-    reserved = false
+    reserved = true
 
     zone_redundant = false
     per_site_scaling = false
