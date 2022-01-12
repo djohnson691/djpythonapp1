@@ -70,11 +70,11 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: TerraformInstaller
+    - task: TerraformInstaller@0
       inputs:
         terraformVersion: $(terraformVersion)
       displayName: 'Install Terraform $(terraformVersion)'
-    - task: TerraformCLI
+    - task: TerraformCLI20
       displayName: "Terraform Init"
       inputs:
         command: init
