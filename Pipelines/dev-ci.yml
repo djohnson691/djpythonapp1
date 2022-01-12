@@ -74,7 +74,7 @@ stages:
       inputs:
         terraformVersion: $(terraformVersion)
       displayName: 'Install Terraform $(terraformVersion)'
-    - task: TerraformCLI20
+    - task: TerraformCLI@0
       displayName: "Terraform Init"
       inputs:
         command: init
