@@ -1,3 +1,7 @@
+provider "azurerm" {
+  features {}
+}
+
 resource "azurerm_resource_group" "djpythonapp1" {
     name = "test"
     location = "Central US"
