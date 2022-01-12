@@ -80,7 +80,7 @@ stages:
         command: init
         backendType: azurerm
         #environmentServiceName: 'djpythonapp1_serviceconnection'
-        backendServiceArm: 'djpythonapp1_serviceconnection'
+        backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
         ensureBackend: true
         backendAzureRmResourceGroupName: test-tfstate
         backendAzureRmResourceGroupLocation: centralus
