@@ -63,21 +63,21 @@ variables:
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       displayName: 'Upload package'
       artifact: drop
-- stage: Deploy
-  displayName: Deploy Stage
-  jobs:
-  - job: DeployTF
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: terraformInstaller@0
-      inputs:
-        terraformVersion: $(terraformVersion)
-      displayName: 'Install Terraform $(terraformVersion)'
-    - task: terraform@0
-      inputs:
-        command: 'init'
-        providerAzureConnectedServiceName: "c0e81386-05f1-4c94-b8e3-51b0bc486450"
-        backendAzureProviderStorageAccountName: 'djpythonapp1testtfstate'
-        displayName: Terraform Init
+  - stage: Deploy
+    displayName: Deploy Stage
+    jobs:
+    - job: DeployTF
+      pool:
+        vmImage: $(vmImageName)
+      steps:
+      - task: terraformInstaller@0
+        inputs:
+          terraformVersion: $(terraformVersion)
+        displayName: 'Install Terraform $(terraformVersion)'
+      - task: terraform@0
+        inputs:
+          command: 'init'
+          providerAzureConnectedServiceName: "c0e81386-05f1-4c94-b8e3-51b0bc486450"
+          backendAzureProviderStorageAccountName: 'djpythonapp1testtfstate'
+          displayName: Terraform Init
 
