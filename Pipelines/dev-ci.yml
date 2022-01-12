@@ -70,14 +70,21 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: terraformInstaller@0
+    - task: TerraformInstaller
       inputs:
         terraformVersion: $(terraformVersion)
       displayName: 'Install Terraform $(terraformVersion)'
-    - task: terraform@0
+    - task: TerraformCLI
+      displayName: "Terraform Init"
       inputs:
-        command: 'init'
-        providerAzureConnectedServiceName: "c0e81386-05f1-4c94-b8e3-51b0bc486450"
-        backendAzureProviderStorageAccountName: 'djpythonapp1testtfstate'
-        displayName: Terraform Init
+        command: init
+        backendType: azurerm
+        backendServiceArm: djpythonapp1_serviceconnection
+        ensureBackend: true
+        backendAzureRmResourceGroupName: test-tfstate
+        backendAzureRmResourceGroupLocation: centralus
+        backendAzureRmProviderStorageAccountName: 'djpythonapp1testtfstate'
+        backendAzureRmStorageAccountSku: LRS
+        backendAzureRmContainerName: tfstate
+        backendAzureRmKey: djpythonapp1_test.tfstate
 
