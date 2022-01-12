@@ -84,7 +84,7 @@ stages:
         ensureBackend: true
         backendAzureRmResourceGroupName: test-tfstate
         backendAzureRmResourceGroupLocation: centralus
-        backendAzureRmProviderStorageAccountName: 'djpythonapp1testtfstate'
+        backendAzureRmStorageAccountName: 'djpythonapp1testtfstate'
         backendAzureRmStorageAccountSku: LRS
         backendAzureRmContainerName: tfstate
         backendAzureRmKey: djpythonapp1_test.tfstate
