@@ -16,7 +16,7 @@ resource "azurerm_app_service_plan" "djpythonapp1" {
 
     sku {
       tier = "Free"
-      sku = "F1"
+      size = "F1"
       capacity = 1
     }
 
