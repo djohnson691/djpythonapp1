@@ -27,7 +27,7 @@ variables:
 
   storage_key: $(storageaccountkey)
 
-  terraformVersion: '1.1'
+  terraformVersion: '1.1.3'
 
 stages:
 - stage: Build
