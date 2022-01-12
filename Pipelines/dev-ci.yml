@@ -81,6 +81,7 @@ stages:
       inputs:
         command: init
         backendType: azurerm
+        workingDirectory: $(terraformWorkingDirectory)
         backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
         ensureBackend: true
         backendAzureRmResourceGroupName: test-tfstate
