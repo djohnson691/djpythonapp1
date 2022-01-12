@@ -1,0 +1,83 @@
+name: DevBuildTest
+
+trigger:
+- Develop
+
+variables:
+  # Azure Resource Manager connection created during pipeline creation
+  azureServiceConnectionId: '88f6f655-7e0a-4d38-86b2-846da9eea546'
+
+  # Web app name
+  webAppName: 'djpythonapp1_test'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+  # Environment name
+  environmentName: 'djpythonapp1_test'
+
+  # Project root folder. Point to the folder containing manage.py file.
+  projectRoot: $(System.DefaultWorkingDirectory)
+
+  # Python version: 3.9
+  pythonVersion: '3.9'
+
+  # Startup Command
+  startUpCommand: 'gunicorn --bind=0.0.0.0 --timeout 600 --chdir Application app:app'
+
+  storage_key: $(storageaccountkey)
+
+  terraformVersion: '1.1'
+
+  stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: BuildJob
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(pythonVersion)'
+      displayName: 'Use Python $(pythonVersion)'
+
+    - script: |
+        python -m venv antenv
+        source antenv/bin/activate
+        python -m pip install --upgrade pip
+        pip install setup
+        pip install -r Application/requirements.txt
+      workingDirectory: $(projectRoot)
+      displayName: "Install requirements"
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(projectRoot)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      displayName: 'Upload package'
+      artifact: drop
+- stage: Deploy
+  displayName: Deploy Stage
+  jobs:
+  - job: DeployTF
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: terraformInstaller@0
+      inputs:
+        terraformVersion: $(terraformVersion)
+      displayName: 'Install Terraform $(terraformVersion)'
+    - task: terraform@0
+      inputs:
+        command: 'init'
+        providerAzureConnectedServiceName: "c0e81386-05f1-4c94-b8e3-51b0bc486450"
+        backendAzureProviderStorageAccountName: 'djpythonapp1testtfstate'
+        displayName: Terraform Init
+        
