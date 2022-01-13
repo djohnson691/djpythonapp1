@@ -44,6 +44,7 @@ resource "azurerm_app_service" "djpythonapp1" {
   app_service_plan_id = azurerm_app_service_plan.djpythonapp1.id
   site_config {
     linux_fx_version = "PYTHON|3.9"
+    use_32_bit_worker_process = true
   }
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.djpythonapp1.instrumentation_key
