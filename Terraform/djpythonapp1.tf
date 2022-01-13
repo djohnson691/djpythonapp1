@@ -34,6 +34,7 @@ resource "azurerm_application_insights" "djpythonapp1" {
   name                = "djpythonapp1-test"
   location            = "Central US"
   resource_group_name = azurerm_resource_group.djpythonapp1.name
+  application_type = "other"
 }
 
 resource "azurerm_app_service" "djpythonapp1" {
