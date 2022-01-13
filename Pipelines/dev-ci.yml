@@ -8,7 +8,7 @@ variables:
   azureServiceConnectionId: '88f6f655-7e0a-4d38-86b2-846da9eea546'
 
   # Web app name
-  webAppName: 'djpythonapp1_test'
+  webAppName: 'djpythonapp1-test'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -115,7 +115,7 @@ stages:
             - task: UsePythonVersion@0
               inputs:
                 versionSpec: '$(pythonVersion)'
-              displayName: 'Use Python version'
+              displayName: 'Use Python version $(pythonVersion)'
   
             - task: AzureWebApp@1
               displayName: 'Deploy Azure Web App : djpythonapp1'
