@@ -14,7 +14,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
   # Environment name
-  environmentName: 'djpythonapp1_test'
+  environmentName: 'test'
 
   # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
@@ -96,7 +96,8 @@ stages:
         command: apply
         environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
         workingDirectory: $(terraformWorkingDirectory)
-- stage: 'Deploy App'
+- stage: DeployApp
+  displayName: 'Deploy Web App'
   dependsOn: 
     -Build
     -DeployTF
