@@ -65,7 +65,7 @@ stages:
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       displayName: 'Upload package'
       artifact: drop
-- stage: Deploy
+- stage: DeployTF
   displayName: Deploy Stage
   jobs:
   - job: DeployTF
@@ -96,5 +96,32 @@ stages:
         command: apply
         environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
         workingDirectory: $(terraformWorkingDirectory)
+- stage: 'Deploy App'
+  dependsOn: Build, DeployTF
+  condition: succeeded()
+  jobs:
+    - deployment: DeploymentJob
+      pool:
+        vmImage: $(vmImageName)
+      environment: $(environmentName)
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+  
+            - task: UsePythonVersion@0
+              inputs:
+                versionSpec: '$(pythonVersion)'
+              displayName: 'Use Python version'
+  
+            - task: AzureWebApp@1
+              displayName: 'Deploy Azure Web App : djpythonapp1'
+              inputs:
+                azureSubscription: $(azureServiceConnectionId)
+                appName: $(webAppName)
+                appType: webAppLinux
+                package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+                startUpCommand: $(startUpCommand)
+
 
 
