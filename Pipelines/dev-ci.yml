@@ -97,7 +97,9 @@ stages:
         environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
         workingDirectory: $(terraformWorkingDirectory)
 - stage: 'Deploy App'
-  dependsOn: Build, DeployTF
+  dependsOn: 
+    -Build
+    -DeployTF
   condition: succeeded()
   jobs:
     - deployment: DeploymentJob
