@@ -99,8 +99,8 @@ stages:
 - stage: DeployApp
   displayName: 'Deploy Web App'
   dependsOn: 
-    -Build
-    -DeployTF
+    - Build
+    - DeployTF
   condition: succeeded()
   jobs:
     - deployment: DeploymentJob
