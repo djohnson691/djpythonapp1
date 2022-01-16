@@ -1,0 +1,130 @@
+name: DevBuildTest
+
+trigger:
+- Develop
+
+variables:
+  # Azure Resource Manager connection created during pipeline creation
+  azureServiceConnectionId: '88f6f655-7e0a-4d38-86b2-846da9eea546'
+
+  # Web app name
+  webAppName: 'djpythonapp1-test'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+  # Environment name
+  environmentName: 'test'
+
+  # Project root folder. Point to the folder containing manage.py file.
+  projectRoot: $(System.DefaultWorkingDirectory)
+
+  # Python version: 3.9
+  pythonVersion: '3.9'
+
+  # Startup Command
+  startUpCommand: 'gunicorn --bind=0.0.0.0 --timeout 600 --chdir Application app:app'
+
+  storage_key: $(storageaccountkey)
+
+  terraformVersion: '1.1.3'
+
+  terraformWorkingDirectory: $(System.DefaultWorkingDirectory)/Terraform
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: BuildJob
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(pythonVersion)'
+      displayName: 'Use Python $(pythonVersion)'
+
+    - script: |
+        python -m venv antenv
+        source antenv/bin/activate
+        python -m pip install --upgrade pip
+        pip install setup
+        pip install -r Application/requirements.txt
+      workingDirectory: $(projectRoot)
+      displayName: "Install requirements"
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(projectRoot)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      displayName: 'Upload package'
+      artifact: drop
+- stage: DeployTF
+  displayName: Deploy Stage
+  jobs:
+  - job: DeployTF
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: TerraformInstaller@0
+      inputs:
+        terraformVersion: $(terraformVersion)
+      displayName: 'Install Terraform $(terraformVersion)'
+    - task: TerraformCLI@0
+      displayName: "Terraform Init"
+      inputs:
+        command: init
+        backendType: azurerm
+        workingDirectory: $(terraformWorkingDirectory)
+        backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
+        ensureBackend: true
+        backendAzureRmResourceGroupName: test-tfstate
+        backendAzureRmResourceGroupLocation: centralus
+        backendAzureRmStorageAccountName: 'djpythonapp1testtfstate'
+        backendAzureRmStorageAccountSku: LRS
+        backendAzureRmContainerName: tfstate
+        backendAzureRmKey: djpythonapp1_test.tfstate
+    - task: TerraformCLI@0
+      displayName: "Terraform Apply"
+      inputs:
+        command: apply
+        environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
+        workingDirectory: $(terraformWorkingDirectory)
+- stage: DeployApp
+  displayName: 'Deploy Web App'
+  dependsOn: 
+    - Build
+    - DeployTF
+  condition: succeeded()
+  jobs:
+    - deployment: DeploymentJob
+      pool:
+        vmImage: $(vmImageName)
+      environment: $(environmentName)
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+  
+            - task: UsePythonVersion@0
+              inputs:
+                versionSpec: '$(pythonVersion)'
+              displayName: 'Use Python version $(pythonVersion)'
+  
+            - task: AzureWebApp@1
+              displayName: 'Deploy Azure Web App : djpythonapp1'
+              inputs:
+                azureSubscription: $(azureServiceConnectionId)
+                appName: $(webAppName)
+                appType: webAppLinux
+                package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+                startUpCommand: $(startUpCommand)
+
+
+
