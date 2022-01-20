@@ -3,6 +3,8 @@ name: DevBuildTest
 trigger:
 - Develop
 
+pr: none
+
 variables:
   # Azure Resource Manager connection created during pipeline creation
   azureServiceConnectionId: '88f6f655-7e0a-4d38-86b2-846da9eea546'
