@@ -43,7 +43,7 @@ stages:
       displayName: "Terraform Apply"
       inputs:
         command: apply
-        commandOptions: -var="resource_group_name=${{parameters.resourceGroup}}" -var="app_service_plan_name-${{parameters.appServicePlanName}}" -var="app_insights_name=${{parameters.appInsightsName}}" -var="app_service_name=${{parameters.appServiceName}}"
+        commandOptions: -var="resource_group_name=${{parameters.resourceGroup}}" -var="app_service_plan_name=${{parameters.appServicePlanName}}" -var="app_insights_name=${{parameters.appInsightsName}}" -var="app_service_name=${{parameters.appServiceName}}"
         environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
         workingDirectory: $(terraformWorkingDirectory)
 - stage: DeployApp
