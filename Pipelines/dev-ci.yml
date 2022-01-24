@@ -9,14 +9,8 @@ variables:
   # Azure Resource Manager connection created during pipeline creation
   azureServiceConnectionId: '88f6f655-7e0a-4d38-86b2-846da9eea546'
 
-  # Web app name
-  webAppName: 'djpythonapp1-test'
-
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
-
-  # Environment name
-  environmentName: 'test'
 
   # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
