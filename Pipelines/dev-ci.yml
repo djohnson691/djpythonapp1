@@ -71,7 +71,7 @@ stages:
   parameters:
     resourceGroupTFStateFile: test-tfstate
     storageAccountNameTFSStateFile: djpythonapp1testtfstate
-    resourceGroupName: test
+    resourceGroup: test
     appServicePlanName: djpythonapp1-test
     appInsightsName: djpythonapp1-test
     appServiceName: djpythonapp1-test
