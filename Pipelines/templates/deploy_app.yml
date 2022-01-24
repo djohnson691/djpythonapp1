@@ -20,11 +20,12 @@ parameters:
   default: ''
 - name: azureServiceConnectionId
   default: ''
-
-variables:
-  terraformVersion: '1.1.3'
-  terraformWorkingDirectory: $(System.DefaultWorkingDirectory)/Terraform
-  startUpCommand: 'gunicorn --bind=0.0.0.0 --timeout 600 --chdir Application app:app'
+- name: terraformVersion
+  default: '1.1.3'
+- name: terraformWorkingDirectory
+  default: $(System.DefaultWorkingDirectory)/Terraform
+- name: startUpCommand
+  default: 'gunicorn --bind=0.0.0.0 --timeout 600 --chdir Application app:app'
 
 stages:
 - stage: DeployTF  #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/
@@ -36,14 +37,14 @@ stages:
     steps:
     - task: TerraformInstaller@0
       inputs:
-        terraformVersion: $(terraformVersion)
-      displayName: 'Install Terraform $(terraformVersion)'
+        terraformVersion: ${{parameters.terraformVersion}
+      displayName: 'Install Terraform ${{parameters.terraformVersion}}'
     - task: TerraformCLI@0
       displayName: "Terraform Init"
       inputs:
         command: init
         backendType: azurerm
-        workingDirectory: $(terraformWorkingDirectory)
+        workingDirectory: ${{parameters.terraformWorkingDirectory}}
         backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
         ensureBackend: true
         backendAzureRmResourceGroupName: ${{parameters.resourceGroupTFStateFile}}
@@ -58,7 +59,7 @@ stages:
         command: apply
         commandOptions: -var="resource_group_name=${{parameters.resourceGroup}}" -var="app_service_plan_name=${{parameters.appServicePlanName}}" -var="app_insights_name=${{parameters.appInsightsName}}" -var="app_service_name=${{parameters.appServiceName}}"
         environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
-        workingDirectory: $(terraformWorkingDirectory)
+        workingDirectory: ${{parameters.terraformWorkingDirectory}}
 - stage: DeployApp
   displayName: 'Deploy Web App'
   dependsOn: 
@@ -87,4 +88,4 @@ stages:
                 appName: ${{parameters.appServiceName}}
                 appType: webAppLinux
                 package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
-                startUpCommand: $(startUpCommand)
+                startUpCommand: ${{parameters.startUpCommand}}
