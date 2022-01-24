@@ -6,13 +6,29 @@ terraform {
   backend "azurerm" {}
 }
 
+variable "resource_group_name" {
+  type = string
+}
+
+variable "app_service_plan_name" {
+  type = string
+}
+
+variable "app_insights_name" {
+  type = string
+}
+
+variable "app_service_name" {
+  type = string
+}
+
 resource "azurerm_resource_group" "djpythonapp1" {
-  name     = "test" #make this a parameter
+  name     = var.resource_group_name
   location = "Central US"
 }
 
 resource "azurerm_app_service_plan" "djpythonapp1" {
-  name                = "djpythonapp1"
+  name                = var.app_service_plan_name
   location            = "Central US"
   resource_group_name = azurerm_resource_group.djpythonapp1.name
   kind                = "Linux"
@@ -31,14 +47,14 @@ resource "azurerm_app_service_plan" "djpythonapp1" {
 }
 
 resource "azurerm_application_insights" "djpythonapp1" {
-  name                = "djpythonapp1"
+  name                = var.app_insights_name
   location            = "Central US"
   resource_group_name = azurerm_resource_group.djpythonapp1.name
   application_type = "other"
 }
 
 resource "azurerm_app_service" "djpythonapp1" {
-  name                = "djpythonapp1"
+  name                = var.app_service_name
   location            = "Central US"
   resource_group_name = azurerm_resource_group.djpythonapp1.name
   app_service_plan_id = azurerm_app_service_plan.djpythonapp1.id
