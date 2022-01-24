@@ -67,66 +67,11 @@ stages:
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       displayName: 'Upload package'
       artifact: drop
-- stage: DeployTF
-  displayName: Deploy Stage
-  jobs:
-  - job: DeployTF
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: TerraformInstaller@0
-      inputs:
-        terraformVersion: $(terraformVersion)
-      displayName: 'Install Terraform $(terraformVersion)'
-    - task: TerraformCLI@0
-      displayName: "Terraform Init"
-      inputs:
-        command: init
-        backendType: azurerm
-        workingDirectory: $(terraformWorkingDirectory)
-        backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
-        ensureBackend: true
-        backendAzureRmResourceGroupName: test-tfstate
-        backendAzureRmResourceGroupLocation: centralus
-        backendAzureRmStorageAccountName: 'djpythonapp1testtfstate'
-        backendAzureRmStorageAccountSku: LRS
-        backendAzureRmContainerName: tfstate
-        backendAzureRmKey: djpythonapp1_test.tfstate
-    - task: TerraformCLI@0
-      displayName: "Terraform Apply"
-      inputs:
-        command: apply
-        environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
-        workingDirectory: $(terraformWorkingDirectory)
-- stage: DeployApp
-  displayName: 'Deploy Web App'
-  dependsOn: 
-    - Build
-    - DeployTF
-  condition: succeeded()
-  jobs:
-    - deployment: DeploymentJob
-      pool:
-        vmImage: $(vmImageName)
-      environment: $(environmentName)
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-  
-            - task: UsePythonVersion@0
-              inputs:
-                versionSpec: '$(pythonVersion)'
-              displayName: 'Use Python version $(pythonVersion)'
-  
-            - task: AzureWebApp@1
-              displayName: 'Deploy Azure Web App : djpythonapp1'
-              inputs:
-                azureSubscription: $(azureServiceConnectionId)
-                appName: $(webAppName)
-                appType: webAppLinux
-                package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
-                startUpCommand: $(startUpCommand)
+- template: .\templates\deploy_app.yml
+  parameters:
+    resourceGroupTFStateFile: test-tfstate
+    storageAccountNameTFSStateFile: djpythonapp1testtfstate
+
 
 
 

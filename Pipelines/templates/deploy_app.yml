@@ -27,9 +27,9 @@ stages:
         workingDirectory: $(terraformWorkingDirectory)
         backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
         ensureBackend: true
-        backendAzureRmResourceGroupName: test-tfstate
+        backendAzureRmResourceGroupName: ${{parameters.resourceGroupTFStateFile}}
         backendAzureRmResourceGroupLocation: centralus
-        backendAzureRmStorageAccountName: 'djpythonapp1testtfstate'
+        backendAzureRmStorageAccountName: ${{parameters.storageAccountNameTFSStateFile}}
         backendAzureRmStorageAccountSku: LRS
         backendAzureRmContainerName: tfstate
         backendAzureRmKey: djpythonapp1_test.tfstate
