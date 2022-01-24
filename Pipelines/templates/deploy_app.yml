@@ -12,6 +12,18 @@ parameters:
   default: ''
 - name: appServiceName
   default: ''
+- name: pythonVersion
+  default: ''
+- name: vmImageName
+  default: ''
+- name: environmentName
+  default: ''
+- name: azureServiceConnectionId
+
+variables:
+  terraformVersion: '1.1.3'
+  terraformWorkingDirectory: $(System.DefaultWorkingDirectory)/Terraform
+  startUpCommand: 'gunicorn --bind=0.0.0.0 --timeout 600 --chdir Application app:app'
 
 stages:
 - stage: DeployTF  #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/
@@ -19,7 +31,7 @@ stages:
   jobs:
   - job: DeployTF
     pool:
-      vmImage: $(vmImageName)
+      vmImage: ${{parameters.vmImageName}}
     steps:
     - task: TerraformInstaller@0
       inputs:
@@ -38,7 +50,7 @@ stages:
         backendAzureRmStorageAccountName: ${{parameters.storageAccountNameTFSStateFile}}
         backendAzureRmStorageAccountSku: LRS
         backendAzureRmContainerName: tfstate
-        backendAzureRmKey: djpythonapp1_test.tfstate
+        backendAzureRmKey: djpythonapp1.tfstate
     - task: TerraformCLI@0
       displayName: "Terraform Apply"
       inputs:
@@ -55,8 +67,8 @@ stages:
   jobs:
     - deployment: DeploymentJob
       pool:
-        vmImage: $(vmImageName)
-      environment: $(environmentName)
+        vmImage: ${{parameters.vmImageName}}
+      environment: ${{parameters.environmentName}}
       strategy:
         runOnce:
           deploy:
@@ -64,14 +76,14 @@ stages:
   
             - task: UsePythonVersion@0
               inputs:
-                versionSpec: '$(pythonVersion)'
-              displayName: 'Use Python version $(pythonVersion)'
+                versionSpec: '${{parameters.pythonVersion}}'
+              displayName: 'Use Python version ${{parameters.pythonVersion}}'
   
             - task: AzureWebApp@1
               displayName: 'Deploy Azure Web App : djpythonapp1'
               inputs:
-                azureSubscription: $(azureServiceConnectionId)
-                appName: $(webAppName)
+                azureSubscription: ${{parameters.azureServiceConnectionId}}
+                appName: ${{parameters.appServiceName}}
                 appType: webAppLinux
                 package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
                 startUpCommand: $(startUpCommand)
