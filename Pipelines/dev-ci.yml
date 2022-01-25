@@ -65,5 +65,8 @@ stages:
     vmImageName: $(vmImageName)
     environmentName: "test"
     azureServiceConnectionId: $(azureServiceConnectionId)
+    dependsOn:
+      - Build
+      - DeployTF
 
 

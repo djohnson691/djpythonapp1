@@ -26,6 +26,8 @@ parameters:
   default: $(System.DefaultWorkingDirectory)/Terraform
 - name: startUpCommand
   default: 'gunicorn --bind=0.0.0.0 --timeout 600 --chdir Application app:app'
+- name: dependsOn
+  default: ''
 
 stages:
 - stage: DeployTF  #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/
@@ -62,9 +64,7 @@ stages:
         workingDirectory: ${{parameters.terraformWorkingDirectory}}
 - stage: DeployApp
   displayName: 'Deploy Web App'
-  dependsOn: 
-    - Build
-    - DeployTF
+  dependsOn: ${{parameters.dependsOn}}
   condition: succeeded()
   jobs:
     - deployment: DeploymentJob

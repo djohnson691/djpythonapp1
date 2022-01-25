@@ -55,3 +55,4 @@ stages:
     vmImageName: $(vmImageName)
     environmentName: "prod"
     azureServiceConnectionId: $(azureServiceConnectionId)
+    dependsOn: RetrieveArtifacts
