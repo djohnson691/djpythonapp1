@@ -59,3 +59,4 @@ stages:
     - RetrieveArtifacts
     - DeployTF
     location: "East US"
+    buildId: $(resources.pipeline.buildPipeline.runID)
