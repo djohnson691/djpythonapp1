@@ -32,7 +32,7 @@ parameters:
 
 stages:
 - stage: DeployTF  #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/
-  displayName: Deploy Stage
+  displayName: Deploy Terraform
   jobs:
   - job: DeployTF
     pool:
