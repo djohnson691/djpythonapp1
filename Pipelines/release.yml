@@ -1,0 +1,57 @@
+name: ReleaseToProd
+
+trigger: none
+pr: none
+
+variables:
+  # Azure Resource Manager connection created during pipeline creation
+  azureServiceConnectionId: '88f6f655-7e0a-4d38-86b2-846da9eea546'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+  # Project root folder. Point to the folder containing manage.py file.
+  projectRoot: $(System.DefaultWorkingDirectory)
+
+  # Python version: 3.9
+  pythonVersion: '3.9'  
+
+resources:
+  pipelines:
+  - pipeline: buildPipeline
+    source: DevBuildTest
+    trigger: none
+
+
+stages:
+- stage: RetrieveArtifacts
+  displayName: Retrieve Artifacts
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    environment: prod
+    pool:
+      vmImage: $(vmImageName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - download: buildPipeline
+              artifact: drop
+            - task: ExtractFiles@1
+              inputs:
+                archiveFilePatterns: '$(PIPELINE.WORKSPACE)/buildPipeline/drop/$(resources.pipeline.buildPipeline.runID).zip'
+                destinationFolder: '$(agent.builddirectory)'
+                cleanDestinationFolder: false
+- template: .\templates\deploy_app.yml
+  parameters:
+    resourceGroupTFStateFile: prod-tfstate
+    storageAccountNameTFSStateFile: djpythonapp1tfstate
+    resourceGroup: prod
+    appServicePlanName: djpythonapp1-prod
+    appInsightsName: djpythonapp1-prod
+    appServiceName: djpythonapp1-prod
+    pythonVersion: $(pythonVersion)
+    vmImageName: $(vmImageName)
+    environmentName: "prod"
+    azureServiceConnectionId: $(azureServiceConnectionId)
