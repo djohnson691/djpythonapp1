@@ -28,6 +28,7 @@ parameters:
   default: 'gunicorn --bind=0.0.0.0 --timeout 600 --chdir Application app:app'
 - name: dependsOn
   default: ''
+  type: object
 
 stages:
 - stage: DeployTF  #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/
