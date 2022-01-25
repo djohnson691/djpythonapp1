@@ -29,6 +29,8 @@ parameters:
 - name: dependsOn
   default: ''
   type: object
+- name: location
+  default: ''
 
 stages:
 - stage: DeployTF  #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/
@@ -60,7 +62,7 @@ stages:
       displayName: "Terraform Apply"
       inputs:
         command: apply
-        commandOptions: -var="resource_group_name=${{parameters.resourceGroup}}" -var="app_service_plan_name=${{parameters.appServicePlanName}}" -var="app_insights_name=${{parameters.appInsightsName}}" -var="app_service_name=${{parameters.appServiceName}}"
+        commandOptions: -var="resource_group_name=${{parameters.resourceGroup}}" -var="app_service_plan_name=${{parameters.appServicePlanName}}" -var="app_insights_name=${{parameters.appInsightsName}}" -var="app_service_name=${{parameters.appServiceName}}" -var="location=${{parameters.location}}"
         environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
         workingDirectory: ${{parameters.terraformWorkingDirectory}}
 - stage: DeployApp

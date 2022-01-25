@@ -68,5 +68,6 @@ stages:
     dependsOn:
       - Build
       - DeployTF
+    location: "Central US"
 
 

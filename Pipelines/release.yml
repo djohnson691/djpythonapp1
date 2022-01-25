@@ -56,3 +56,4 @@ stages:
     environmentName: "prod"
     azureServiceConnectionId: $(azureServiceConnectionId)
     dependsOn: RetrieveArtifacts
+    location: "East US"
