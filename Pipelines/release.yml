@@ -55,5 +55,7 @@ stages:
     vmImageName: $(vmImageName)
     environmentName: "prod"
     azureServiceConnectionId: $(azureServiceConnectionId)
-    dependsOn: RetrieveArtifacts
+    dependsOn: 
+    - RetrieveArtifacts
+    - DeployTF
     location: "East US"
