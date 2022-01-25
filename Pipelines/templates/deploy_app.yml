@@ -32,7 +32,7 @@ parameters:
 - name: location
   default: ''
 - name: buildId
-  type: number
+  default: $(Build.BuildId)
 
 stages:
 - stage: DeployTF  #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/

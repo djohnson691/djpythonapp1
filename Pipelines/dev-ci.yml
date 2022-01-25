@@ -69,6 +69,6 @@ stages:
       - Build
       - DeployTF
     location: "Central US"
-    buildID: $(Build.BuildId)
+    #buildID: $(Build.BuildId)
 
 
