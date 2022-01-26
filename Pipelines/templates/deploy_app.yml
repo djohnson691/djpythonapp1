@@ -38,7 +38,7 @@ steps:
   inputs:
     command: init
     backendType: azurerm
-    workingDirectory: $(System.DefaultWorkingDirectory)/terraform
+    workingDirectory: $(System.DefaultWorkingDirectory)/Terraform
     backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
     ensureBackend: true
     backendAzureRmResourceGroupName: ${{parameters.resourceGroupTFStateFile}}
