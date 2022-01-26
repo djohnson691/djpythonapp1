@@ -21,7 +21,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Build stage
+  displayName: Build
   jobs:
   - job: BuildJob
     pool:
@@ -53,22 +53,27 @@ stages:
     - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       displayName: 'Upload package'
       artifact: drop
-- template: .\templates\deploy_app.yml
-  parameters:
-    resourceGroupTFStateFile: test-tfstate
-    storageAccountNameTFSStateFile: djpythonapp1testtfstate
-    resourceGroup: test
-    appServicePlanName: djpythonapp1-test
-    appInsightsName: djpythonapp1-test
-    appServiceName: djpythonapp1-test
-    pythonVersion: $(pythonVersion)
-    vmImageName: $(vmImageName)
-    environmentName: "test"
-    azureServiceConnectionId: $(azureServiceConnectionId)
-    dependsOn:
-      - Build
-      - DeployTF
-    location: "Central US"
-    #buildID: $(Build.BuildId)
+  - deployment: DeployApp
+    displayName: Deploy
+    dependsOn: Build
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'test'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: .\templates\deploy_app.yml
+          parameters:
+          resourceGroupTFStateFile: test-tfstate
+          storageAccountNameTFSStateFile: djpythonapp1testtfstate
+          resourceGroup: test
+          appServicePlanName: djpythonapp1-test
+          appInsightsName: djpythonapp1-test
+          appServiceName: djpythonapp1-test
+          pythonVersion: $(pythonVersion)
+          azureServiceConnectionId: $(azureServiceConnectionId)
+          location: "Central US"
+          #buildID: $(Build.BuildId)
 
 

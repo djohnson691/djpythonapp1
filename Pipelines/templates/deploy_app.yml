@@ -14,10 +14,6 @@ parameters:
   default: ''
 - name: pythonVersion
   default: ''
-- name: vmImageName
-  default: ''
-- name: environmentName
-  default: ''
 - name: azureServiceConnectionId
   default: ''
 - name: terraformVersion
@@ -26,71 +22,47 @@ parameters:
   default: $(System.DefaultWorkingDirectory)/Terraform
 - name: startUpCommand
   default: 'gunicorn --bind=0.0.0.0 --timeout 600 --chdir Application app:app'
-- name: dependsOn
-  default: ''
   type: object
 - name: location
   default: ''
 - name: buildId
   default: $(Build.BuildId)
 
-stages:
-- stage: DeployTF  #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/
-  displayName: Deploy Terraform
-  jobs:
-  - job: DeployTF
-    pool:
-      vmImage: ${{parameters.vmImageName}}
-    steps:
-    - task: TerraformInstaller@0
-      inputs:
+steps:
+- task: TerraformInstaller@0 #using provider at https://github.com/charleszipp/azure-pipelines-tasks-terraform/
+  displayName: 'Install Terraform ${{parameters.terraformVersion}}'
+  inputs:
         terraformVersion: ${{parameters.terraformVersion}}
-      displayName: 'Install Terraform ${{parameters.terraformVersion}}'
-    - task: TerraformCLI@0
-      displayName: "Terraform Init"
-      inputs:
-        command: init
-        backendType: azurerm
-        workingDirectory: ${{parameters.terraformWorkingDirectory}}
-        backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
-        ensureBackend: true
-        backendAzureRmResourceGroupName: ${{parameters.resourceGroupTFStateFile}}
-        backendAzureRmResourceGroupLocation: centralus
-        backendAzureRmStorageAccountName: ${{parameters.storageAccountNameTFSStateFile}}
-        backendAzureRmStorageAccountSku: LRS
-        backendAzureRmContainerName: tfstate
-        backendAzureRmKey: djpythonapp1.tfstate
-    - task: TerraformCLI@0
-      displayName: "Terraform Apply"
-      inputs:
-        command: apply
-        commandOptions: -var="resource_group_name=${{parameters.resourceGroup}}" -var="app_service_plan_name=${{parameters.appServicePlanName}}" -var="app_insights_name=${{parameters.appInsightsName}}" -var="app_service_name=${{parameters.appServiceName}}" -var="location=${{parameters.location}}"
-        environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
-        workingDirectory: ${{parameters.terraformWorkingDirectory}}
-- stage: DeployApp
-  displayName: 'Deploy Web App'
-  dependsOn: ${{parameters.dependsOn}}
-  condition: succeeded()
-  jobs:
-    - deployment: DeploymentJob
-      pool:
-        vmImage: ${{parameters.vmImageName}}
-      environment: ${{parameters.environmentName}}
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-  
-            - task: UsePythonVersion@0
-              inputs:
-                versionSpec: '${{parameters.pythonVersion}}'
-              displayName: 'Use Python version ${{parameters.pythonVersion}}'
-  
-            - task: AzureWebApp@1
-              displayName: 'Deploy Azure Web App : djpythonapp1'
-              inputs:
-                azureSubscription: ${{parameters.azureServiceConnectionId}}
-                appName: ${{parameters.appServiceName}}
-                appType: webAppLinux
-                package: $(Pipeline.Workspace)/drop/${{parameters.buildID}}.zip
-                startUpCommand: ${{parameters.startUpCommand}}
+- task: TerraformCLI@0
+  displayName: "Terraform Init"
+  inputs:
+    command: init
+    backendType: azurerm
+    workingDirectory: ${{parameters.terraformWorkingDirectory}}
+    backendServiceArm: 'djpythonapp1_serviceprincipalserviceconnection'
+    ensureBackend: true
+    backendAzureRmResourceGroupName: ${{parameters.resourceGroupTFStateFile}}
+    backendAzureRmResourceGroupLocation: centralus
+    backendAzureRmStorageAccountName: ${{parameters.storageAccountNameTFSStateFile}}
+    backendAzureRmStorageAccountSku: LRS
+    backendAzureRmContainerName: tfstate
+    backendAzureRmKey: djpythonapp1.tfstate
+- task: TerraformCLI@0
+  displayName: "Terraform Apply"
+  inputs:
+    command: apply
+    commandOptions: -var="resource_group_name=${{parameters.resourceGroup}}" -var="app_service_plan_name=${{parameters.appServicePlanName}}" -var="app_insights_name=${{parameters.appInsightsName}}" -var="app_service_name=${{parameters.appServiceName}}" -var="location=${{parameters.location}}"
+    environmentServiceName: 'djpythonapp1_serviceprincipalserviceconnection'
+    workingDirectory: ${{parameters.terraformWorkingDirectory}}
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '${{parameters.pythonVersion}}'
+  displayName: 'Use Python version ${{parameters.pythonVersion}}'
+- task: AzureWebApp@1
+  displayName: 'Deploy Azure Web App : ${{parameters.appServiceName}}'
+  inputs:
+    azureSubscription: ${{parameters.azureServiceConnectionId}}
+    appName: ${{parameters.appServiceName}}
+    appType: webAppLinux
+    package: $(Pipeline.Workspace)/drop/${{parameters.buildID}}.zip
+    startUpCommand: ${{parameters.startUpCommand}}
