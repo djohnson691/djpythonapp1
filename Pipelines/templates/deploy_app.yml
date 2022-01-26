@@ -42,7 +42,7 @@ steps:
   displayName: 'Bash2'
   inputs:
     targetType: 'inline'
-    script: 'ls /home/vsts/work/1/'
+    script: 'ls -R'
 #debug
 - task: TerraformCLI@0
   displayName: "Terraform Init"
