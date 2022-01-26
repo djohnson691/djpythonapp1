@@ -55,7 +55,7 @@ stages:
       artifact: drop
   - deployment: DeployApp
     displayName: Deploy
-    dependsOn: Build
+    dependsOn: BuildJob
     pool:
       vmImage: $(vmImageName)
     environment: 'test'
