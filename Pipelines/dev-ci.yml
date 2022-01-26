@@ -64,16 +64,16 @@ stages:
         deploy:
           steps:
           - template: .\templates\deploy_app.yml
-          parameters:
-          resourceGroupTFStateFile: test-tfstate
-          storageAccountNameTFSStateFile: djpythonapp1testtfstate
-          resourceGroup: test
-          appServicePlanName: djpythonapp1-test
-          appInsightsName: djpythonapp1-test
-          appServiceName: djpythonapp1-test
-          pythonVersion: $(pythonVersion)
-          azureServiceConnectionId: $(azureServiceConnectionId)
-          location: "Central US"
-          #buildID: $(Build.BuildId)
+            parameters:
+              resourceGroupTFStateFile: test-tfstate
+              storageAccountNameTFSStateFile: djpythonapp1testtfstate
+              resourceGroup: test
+              appServicePlanName: djpythonapp1-test
+              appInsightsName: djpythonapp1-test
+              appServiceName: djpythonapp1-test
+              pythonVersion: $(pythonVersion)
+              azureServiceConnectionId: $(azureServiceConnectionId)
+              location: "Central US"
+              #buildID: $(Build.BuildId)
 
 
