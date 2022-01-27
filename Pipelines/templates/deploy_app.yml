@@ -33,17 +33,7 @@ steps:
   displayName: 'Install Terraform ${{parameters.terraformVersion}}'
   inputs:
         terraformVersion: ${{parameters.terraformVersion}}
-#debug
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'ls $(System.DefaultWorkingDirectory)/'
-- task: Bash@3
-  displayName: 'Bash2'
-  inputs:
-    targetType: 'inline'
-    script: 'find . -type d'
-#debug
+- checkout: self #need to retrieve source files since deployment jobs don't DL them by default
 - task: TerraformCLI@0
   displayName: "Terraform Init"
   inputs:
