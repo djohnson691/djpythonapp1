@@ -74,6 +74,5 @@ stages:
               pythonVersion: $(pythonVersion)
               azureServiceConnectionId: $(azureServiceConnectionId)
               location: "Central US"
-              #buildID: $(Build.BuildId)
 
 

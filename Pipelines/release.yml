@@ -43,24 +43,15 @@ stages:
                 archiveFilePatterns: '$(PIPELINE.WORKSPACE)/buildPipeline/drop/$(resources.pipeline.buildPipeline.runID).zip'
                 destinationFolder: '$(agent.builddirectory)'
                 cleanDestinationFolder: false
-            - task: PublishPipelineArtifact@1
-              inputs:
-                targetPath: '$(PIPELINE.WORKSPACE)/buildPipeline/drop/$(resources.pipeline.buildPipeline.runID).zip'
-                artifactName: drop
-- template: .\templates\deploy_app.yml
-  parameters:
-    resourceGroupTFStateFile: prod-tfstate
-    storageAccountNameTFSStateFile: djpythonapp1tfstate
-    resourceGroup: prod
-    appServicePlanName: djpythonapp1-prod
-    appInsightsName: djpythonapp1-prod
-    appServiceName: djpythonapp1-prod
-    pythonVersion: $(pythonVersion)
-    vmImageName: $(vmImageName)
-    environmentName: "prod"
-    azureServiceConnectionId: $(azureServiceConnectionId)
-    dependsOn: 
-    - RetrieveArtifacts
-    - DeployTF
-    location: "East US"
-    buildId: $(resources.pipeline.buildPipeline.runID)
+            - template: .\templates\deploy_app.yml
+              parameters:
+                resourceGroupTFStateFile: prod-tfstate
+                storageAccountNameTFSStateFile: djpythonapp1tfstate
+                resourceGroup: prod
+                appServicePlanName: djpythonapp1-prod
+                appInsightsName: djpythonapp1-prod
+                appServiceName: djpythonapp1-prod
+                pythonVersion: $(pythonVersion)
+                azureServiceConnectionId: $(azureServiceConnectionId)
+                location: "East US"
+                buildId: $(resources.pipeline.buildPipeline.runID)
