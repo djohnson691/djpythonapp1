@@ -43,6 +43,11 @@ stages:
                 archiveFilePatterns: '$(PIPELINE.WORKSPACE)/buildPipeline/drop/$(resources.pipeline.buildPipeline.runID).zip'
                 destinationFolder: '$(Build.SourcesDirectory)'
                 cleanDestinationFolder: false
+            - task: CopyFiles@2 # move (copy) zip file to pipeline workspace where deploy task can find it
+              inputs: 
+                sourceFolder: '$(PIPELINE.WORKSPACE)/buildPipeline/drop'
+                targetFolder: $(Pipeline.Workspace)/drop'
+                contents: '*.zip'
             - template: .\templates\deploy_app.yml
               parameters:
                 resourceGroupTFStateFile: prod-tfstate
