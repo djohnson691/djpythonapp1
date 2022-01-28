@@ -63,6 +63,7 @@ stages:
       runOnce:
         deploy:
           steps:
+          - checkout: self #need to retrieve source files since deployment jobs don't DL them by default
           - template: .\templates\deploy_app.yml
             parameters:
               resourceGroupTFStateFile: test-tfstate

@@ -33,7 +33,6 @@ steps:
   displayName: 'Install Terraform ${{parameters.terraformVersion}}'
   inputs:
         terraformVersion: ${{parameters.terraformVersion}}
-- checkout: self #need to retrieve source files since deployment jobs don't DL them by default
 - task: TerraformCLI@0
   displayName: "Terraform Init"
   inputs:
