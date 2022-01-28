@@ -41,7 +41,7 @@ stages:
             - task: ExtractFiles@1
               inputs:
                 archiveFilePatterns: '$(PIPELINE.WORKSPACE)/buildPipeline/drop/$(resources.pipeline.buildPipeline.runID).zip'
-                destinationFolder: '$(agent.builddirectory)'
+                destinationFolder: '$(Build.SourcesDirectory)'
                 cleanDestinationFolder: false
             - template: .\templates\deploy_app.yml
               parameters:
