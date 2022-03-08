@@ -1,0 +1,8 @@
+steps:
+- task: Npm@1
+  inputs:
+    command: install
+    workingDir: "pulumi-stack/"
+- task: Pulumi@0
+  inputs:
+    azureSubscription: "$(ServiceConnectName)"

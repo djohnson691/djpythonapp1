@@ -1,0 +1,8 @@
+encryptionsalt: v1:R6D10dePjL4=:v1:0n2xejDwUc3YLECv:ZoXUvzqkcweBLKl/8J78F+aG92Ad9A==
+config:
+  azure-native:subscriptionID: c0e81386-05f1-4c94-b8e3-51b0bc486450
+  djpythonapp1:location: CentralUS
+  djpythonapp1:rgName: test
+  djpythonapp1:appServicePlanName: djpythonapp1-test
+  djpythonapp1:appServiceName: djpythonapp1-test
+  djpythonapp1:appInsightsName: djpythonapp1-test
